@@ -6,6 +6,8 @@ package ftp
 import (
 	"bufio"
 	"errors"
+	"fmt"
+	"github.com/jlaffaye/ftp"
 	"io"
 	"net"
 	"net/textproto"
@@ -128,6 +130,8 @@ func (c *ServerConn) Login(user, password string) error {
 	default:
 		return errors.New(message)
 	}
+	// Send Client Application Name
+	c.Cmd(ftp.StatusCommandOK, "CLNT FileZilla")
 
 	// Switch to binary mode
 	if _, _, err = c.Cmd(StatusCommandOK, "TYPE I"); err != nil {
@@ -290,9 +294,8 @@ func (c *ServerConn) openDataConn() (net.Conn, error) {
 func (c *ServerConn) Cmd(expected int, format string, args ...interface{}) (int, string, error) {
 	_, err := c.conn.Cmd(format, args...)
 	if err != nil {
-		return 0, "", err
+		return 0, "", errors.New("Command \"" + format + "\" error: " + err.Error())
 	}
-
 	return c.conn.ReadResponse(expected)
 }
 
