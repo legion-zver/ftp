@@ -6,7 +6,6 @@ package ftp
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"github.com/jlaffaye/ftp"
 	"io"
 	"net"
